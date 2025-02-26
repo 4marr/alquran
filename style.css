@@ -3,6 +3,7 @@
 * {
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
 }
 
 body {
@@ -28,19 +29,12 @@ audio {
 nav {
     position: fixed;
     width: 100%;
-    padding: 0.5rem 0;
+    padding: 0.5rem 1rem;
     display: flex;
     align-items: center;
     background: #fff;
     z-index: 10;
     border-bottom: solid 5px #F9F9F9;
-}
-
-@media screen and (max-width: 768px) {
-    nav {
-        flex-direction: column;
-        justify-content: center;
-    }
 }
 
 .bx-arrow-back {
