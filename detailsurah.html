@@ -92,14 +92,6 @@
             `
                 }
 
-                // Fetch tafsir data for all ayats
-                const tafsirData = {};
-                for (const item of data1.ayats) {
-                    let response = await fetch(`https://api.alifm.net/alquran/tafsir/${item.aya_id}`);
-                    let tafsir = await response.json();
-                    tafsirData[item.aya_id] = tafsir.tafsir[0].text;
-                }
-
                 data1.ayats.forEach((item, index) => {
                     ContainerAyat += `
             <li class="list-ayat" id="list-ayat-${item.aya_id}">
@@ -116,9 +108,6 @@
             </li>`;
                 });
                 document.getElementById('listContainerSurah').innerHTML = ContainerAyat;
-
-                // Store tafsir data in a global variable
-                window.tafsirData = tafsirData;
             } catch (error) {
                 console.log(error)
             } finally {
@@ -129,18 +118,24 @@
         }
         fetchData();
 
-        function showTafsir(ayatID, button) {
+        async function showTafsir(ayatID, button) {
             const ayatElement = document.getElementById(`list-ayat-${ayatID}`);
             let tafsirContainer = ayatElement.querySelector('.tafsir-content');
             if (tafsirContainer) {
                 tafsirContainer.remove();
                 button.innerText = "Tampilkan Tafsir";
             } else {
-                tafsirContainer = document.createElement('div');
-                tafsirContainer.classList.add('tafsir-content');
-                tafsirContainer.innerHTML = `${window.tafsirData[ayatID]}`;
-                ayatElement.querySelector('.container-ayat').appendChild(tafsirContainer);
-                button.innerText = "Sembunyikan Tafsir";
+                try {
+                    let response = await fetch(`https://api.alifm.net/alquran/tafsir/${ayatID}`);
+                    let data = await response.json();
+                    tafsirContainer = document.createElement('div');
+                    tafsirContainer.classList.add('tafsir-content');
+                    tafsirContainer.innerHTML = `${data.tafsir[0].text}`;
+                    ayatElement.querySelector('.container-ayat').appendChild(tafsirContainer);
+                    button.innerText = "Sembunyikan Tafsir";
+                } catch (error) {
+                    console.log(error);
+                }
             }
         }
 
